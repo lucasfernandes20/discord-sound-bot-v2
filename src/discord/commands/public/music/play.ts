@@ -4,7 +4,6 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ComponentType,
-  ConnectionService,
   EmbedBuilder,
 } from "discord.js";
 import { Command } from "@/discord/base";
@@ -13,16 +12,11 @@ import {
   createEmbedAuthor,
   createRow,
   hexToRgb,
-  replaceText,
-  spaceBuilder,
 } from "@magicyan/discord";
 import { settings } from "@/settings";
 import {
-  AudioPlayer,
-  VoiceConnection,
   createAudioPlayer,
   createAudioResource,
-  getVoiceConnection,
   joinVoiceChannel,
 } from "@discordjs/voice";
 import Ytdl from "ytdl-core";
@@ -70,7 +64,7 @@ export default new Command({
       author: createEmbedAuthor({ user }),
       color: hexToRgb(settings.colors.theme.success),
       description: brBuilder(
-        `## Play youtube.com/${musicPlayer}?`,
+        `## Play ${musicPlayer}?`,
         "- If you want to play this music on current voice channel, pess bellow button",
         "- If you do not want to play, ignore this Embed"
       ),
@@ -118,7 +112,10 @@ export default new Command({
           adapterCreator: voiceChannel.guild.voiceAdapterCreator,
         });
         voiceConnection.subscribe(player);
-        const stream = Ytdl(formattedUrl, { filter: "audioonly" });
+        const stream = Ytdl(formattedUrl, {
+          filter: "audioonly",
+          quality: "highestaudio",
+        });
 
         stream.on("error", (err) => console.error(err));
 

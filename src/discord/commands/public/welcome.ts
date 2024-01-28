@@ -31,12 +31,7 @@ new Command({
         ? locale
         : Locale.EnglishUS;
 
-    const libMention = hyperlink(
-      "@magicyan/discord",
-      "https://github.com/rinckodev/magicyan/tree/main/packages/discord"
-    );
-
-    const githubProfileUrl = "https://github.com/rinckodev";
+    const githubProfileUrl = "https://github.com/lucasfernandes20";
 
     const embed = new EmbedBuilder({
       author: createEmbedAuthor({ user }),
@@ -45,27 +40,23 @@ new Command({
         ...lang.description[avaliableLocales].map((text) =>
           replaceText(text, {
             "var(user)": user,
-            "var(lib)": libMention,
           })
         )
       ),
       footer: {
         text: replaceText(lang.footer[avaliableLocales], {
-          "var(github)": spaceBuilder("Rincko Dev", githubProfileUrl),
+          "var(github)": spaceBuilder("Kukka dev", githubProfileUrl),
         }),
         iconURL: githubProfileUrl + ".png",
       },
     });
 
-    const row = createRow(
-      // Button function on src/discord/components/example.ts
-      new ButtonBuilder({
-        customId: "example-component-button",
-        label: "Example button",
-        style: ButtonStyle.Primary,
-      })
-    );
-
-    interaction.reply({ ephemeral, embeds: [embed], components: [row] });
+    interaction.reply({
+      ephemeral,
+      embeds: [embed],
+      files: [
+        "https://i.pinimg.com/474x/07/46/2e/07462ea00b3efa600d38f35b6c90427a.jpg",
+      ],
+    });
   },
 });
