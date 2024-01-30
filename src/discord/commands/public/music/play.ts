@@ -19,7 +19,7 @@ import {
   createAudioResource,
   joinVoiceChannel,
 } from "@discordjs/voice";
-import Ytdl from "ytdl-core";
+import ytdl from "ytdl-core";
 
 export default new Command({
   name: "play",
@@ -54,17 +54,21 @@ export default new Command({
     const video = musicPlayer.split("/watch");
     const formattedUrl = `https://www.youtube.com/watch${video}`;
 
-    if (!Ytdl.validateURL(formattedUrl)) {
+    if (!ytdl.validateURL(formattedUrl)) {
       interaction.reply(
         brBuilder("The following youtube URL don't exists:", formattedUrl)
       );
     }
 
+    const youtubeVideoInformations = await ytdl.getBasicInfo(formattedUrl);
+
     const embed = new EmbedBuilder({
       author: createEmbedAuthor({ user }),
       color: hexToRgb(settings.colors.theme.success),
+      thumbnail: youtubeVideoInformations.videoDetails.thumbnails[0],
+      title: `Play ${youtubeVideoInformations.videoDetails.title} ?`,
       description: brBuilder(
-        `## Play ${musicPlayer}?`,
+        `_${youtubeVideoInformations.videoDetails.author.name}_`,
         "- If you want to play this music on current voice channel, pess bellow button",
         "- If you do not want to play, ignore this Embed"
       ),
@@ -108,13 +112,14 @@ export default new Command({
           channelId: voiceChannel.id,
           guildId: voiceChannel.guildId,
           selfMute: false,
-          selfDeaf: false,
+          selfDeaf: true,
           adapterCreator: voiceChannel.guild.voiceAdapterCreator,
         });
         voiceConnection.subscribe(player);
-        const stream = Ytdl(formattedUrl, {
+        const stream = ytdl(formattedUrl, {
           filter: "audioonly",
           quality: "highestaudio",
+          highWaterMark: 1 << 25,
         });
 
         stream.on("error", (err) => console.error(err));
