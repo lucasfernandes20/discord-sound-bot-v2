@@ -60,7 +60,7 @@ export default new Command({
       );
     }
 
-    const youtubeVideoInformations = await ytdl.getBasicInfo(formattedUrl);
+    const youtubeVideoInformations = await ytdl.getInfo(formattedUrl);
 
     const embed = new EmbedBuilder({
       author: createEmbedAuthor({ user }),
@@ -118,8 +118,10 @@ export default new Command({
         voiceConnection.subscribe(player);
         const stream = ytdl(formattedUrl, {
           filter: "audioonly",
-          quality: "highestaudio",
-          highWaterMark: 1 << 25,
+          highWaterMark: 1 << 62,
+          liveBuffer: 1 << 62,
+          dlChunkSize: 0, //disabling chunking is recommended in discord bot
+          quality: "lowestaudio",
         });
 
         stream.on("error", (err) => console.error(err));
